@@ -2,6 +2,11 @@ from authlib.jose import jwt
 import time
 
 def issue_jwt( file_name='key.pem' ):
+  """
+    issue_jwt: create jwt based on rsa key file
+    @input: filename
+    @output: jwt string
+  """
 
   encoded_jwt = None
 
@@ -25,3 +30,4 @@ def issue_jwt( file_name='key.pem' ):
     encoded_jwt = jwt.encode( header, payload, key )
 
   return encoded_jwt
+
