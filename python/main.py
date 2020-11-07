@@ -54,10 +54,13 @@ def verify_jwt( encoded_jwt, filename='pubkey.pem' ):
   
   options = {
     'iss' : {
+      #for multiple issuers you can use `values`
       'values' : ['Issuer name', 'Another issuer'],
+      #tells jwt whether it has to check for issuer
       'essential' : True
     },
     'sub' : {
+      #for one subject you can use `value`
       'value' : 'Subject name',
       'essential' : True
     },
@@ -76,13 +79,16 @@ def verify_jwt( encoded_jwt, filename='pubkey.pem' ):
     },
     'jti' : {
       'essential' : True,
+      #you can define your own function for validation
       'validate' : validate_jti
     }
   }
 
   with open( filename, 'r' ) as f:
     pubkey = f.read()
+    #here we decode claims for validation
     claims = jwt.decode( encoded_jwt, pubkey, claims_options=options )
+    #and finally we validate every claim
     claims.validate()
     ret_val = claims.__str__()
 
@@ -90,5 +96,6 @@ def verify_jwt( encoded_jwt, filename='pubkey.pem' ):
 
 if __name__ == "__main__":
   s =  issue_jwt()
+  #we'll wait for one second since the token isn't valid yet
   time.sleep( 1 )
   print( verify_jwt( s ) )
