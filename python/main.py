@@ -12,13 +12,17 @@ def issue_jwt( filename='key.pem' ):
 
   iat_time = int( time.time() ) #when was this jwt issued
   nbf_time = iat_time + 1 #valid in one second
-  exp_time = nbf_time + 60 * 3 # expires in three minutes
+  exp_time = nbf_time + 60 * 60 * 24 # expires in a day
   
   header = { 'alg' : 'RS256' }
   payload = {
-    'iss' : 'Issuer name',
-    'sub' : 'Subject name',
-    'aud' : 'Audience name',
+    #custom fields
+    'name' : 'John Doe',
+    'classes' : ['BI-HWB', 'BI-PST', 'BI-SI1.2', 'BI-SSB'],
+    #standard fields
+    'iss' : 'FIT CVUT',
+    'sub' : 'SSB Demo',
+    'aud' : 'https://bi.ssb/demo',
     'exp' : exp_time,
     'nbf' : nbf_time,
     'iat' : iat_time,
@@ -55,17 +59,17 @@ def verify_jwt( encoded_jwt, filename='pubkey.pem' ):
   options = {
     'iss' : {
       #for multiple issuers you can use `values`
-      'values' : ['Issuer name', 'Another issuer'],
+      'values' : ['FIT CVUT', 'FIT CTU'],
       #tells jwt whether it has to check for issuer
       'essential' : True
     },
     'sub' : {
       #for one subject you can use `value`
-      'value' : 'Subject name',
+      'value' : 'SSB Demo',
       'essential' : True
     },
     'aud' : {
-      'value' : 'Audience name',
+      'value' : 'https://bi.ssb/demo',
       'essential' : True
     },
     'exp' : {
