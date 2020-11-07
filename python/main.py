@@ -1,7 +1,7 @@
 from authlib.jose import jwt
 import time
 
-def issue_jwt( file_name='key.pem' ):
+def issue_jwt( filename='key.pem' ):
   """
     issue_jwt: create jwt based on rsa key file
     @input: filename
@@ -11,7 +11,7 @@ def issue_jwt( file_name='key.pem' ):
   encoded_jwt = None
 
   iat_time = int( time.time() ) #when was this jwt issued
-  nbf_time = iat_time + 3 #valid in three seconds
+  nbf_time = iat_time + 1 #valid in one second
   exp_time = nbf_time + 60 * 3 # expires in three minutes
   
   header = { 'alg' : 'RS256' }
@@ -25,9 +25,70 @@ def issue_jwt( file_name='key.pem' ):
     'jti' : 'JWT ID'
   }
 
-  with open( file_name, 'r' ) as f:
+  with open( filename, 'r' ) as f:
     key = f.read()
     encoded_jwt = jwt.encode( header, payload, key )
 
   return encoded_jwt
 
+def validate_jti( claim, jti ):
+
+  correct = 'JWT ID'
+
+  if len( correct ) != len( jti ):
+    return False
+
+  for i,j in zip( jti, correct ):
+    if i != j:
+      return False
+
+  return True
+
+def verify_jwt( encoded_jwt, filename='pubkey.pem' ):
+  """
+    @input: jwt to decode, filename with public key
+    @output: decoded jwt str
+  """
+
+  ret_val = ""
+  
+  options = {
+    'iss' : {
+      'values' : ['Issuer name', 'Another issuer'],
+      'essential' : True
+    },
+    'sub' : {
+      'value' : 'Subject name',
+      'essential' : True
+    },
+    'aud' : {
+      'value' : 'Audience name',
+      'essential' : True
+    },
+    'exp' : {
+      'essential' : True
+    },
+    'nbf' : {
+      'essential' : True
+    },
+    'iat' : {
+      'essential' : True
+    },
+    'jti' : {
+      'essential' : True,
+      'validate' : validate_jti
+    }
+  }
+
+  with open( filename, 'r' ) as f:
+    pubkey = f.read()
+    claims = jwt.decode( encoded_jwt, pubkey, claims_options=options )
+    claims.validate()
+    ret_val = claims.__str__()
+
+  return ret_val
+
+if __name__ == "__main__":
+  s =  issue_jwt()
+  time.sleep( 1 )
+  print( verify_jwt( s ) )
