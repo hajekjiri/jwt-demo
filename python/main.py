@@ -1,7 +1,7 @@
 from authlib.jose import jwt
 import time
 
-def issue_jwt( filename='key.pem' ):
+def issue_jwt( filename='../keys/fit.private.key' ):
   """
     issue_jwt: create jwt based on rsa key file
     @input: filename
@@ -48,7 +48,7 @@ def validate_jti( claim, jti ):
 
   return True
 
-def verify_jwt( encoded_jwt, filename='pubkey.pem' ):
+def verify_jwt( encoded_jwt, filename='../keys/fit.public.key' ):
   """
     @input: jwt to decode, filename with public key
     @output: decoded jwt str
