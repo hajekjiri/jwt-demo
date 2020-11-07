@@ -5,6 +5,10 @@
   "repository": "https://github.com/hajekjiri/jwt-demo",
   "author": "Jiri Hajek",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "main": "ts-node main.ts"
+  },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.0",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
