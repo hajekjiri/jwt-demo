@@ -13,7 +13,7 @@ jwt@demo:~$ pip install --user authlib
 
 Then you can simply call the script:
 ```console
-jwt@dome:~$ python3 main.py
+jwt@demo:~$ python3 main.py
 ```
 
 Or if you wish to use python console:
